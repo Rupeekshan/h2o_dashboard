@@ -1,0 +1,13 @@
+# Instruction to install
+# pip install -r examples/requirements.txt
+pygments
+Faker
+numpy
+pandas
+bokeh
+matplotlib
+plotly
+altair
+vega-datasets
+scikit-learn
+h2o_wave[ml]
