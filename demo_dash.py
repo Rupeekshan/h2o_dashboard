@@ -76,6 +76,15 @@ page['header'] = ui.header_card(
     ],
 )
 
-
+for i in range(5):
+    page[f'bar_stat_{i}'] = ui.wide_bar_stat_card(
+        box=ui.boxes('content', 'sidebar', f'content{i}'),
+        title="Jingle bells",
+        value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        plot_color='$red',
+        progress=0.3,
+        data=dict(foo=10, bar=0.5),
+    )
 
 page.save()
