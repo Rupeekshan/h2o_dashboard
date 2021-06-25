@@ -38,31 +38,26 @@ page['meta'] = ui.meta_card(box='', layouts=[
             ui.zone('header', size='80px'),
             # Use remaining space for body
             ui.zone('first', direction=ui.ZoneDirection.ROW, zones=[
-                # 300px wide sidebar
-                ui.zone('sidebar', size='25%'),
-                # Use remaining space for other widgets
-                ui.zone('content', size='25%'),
-
-                ui.zone('rest1', size='25%'),
-
-                ui.zone('rest2', size='25%'),
-                
-                # ui.zone('other', zones=[
-                #     # Use one half for charts
-                #     ui.zone('charts', direction=ui.ZoneDirection.ROW),
-                #     # Use other half for content
-                #     ui.zone('content'),
-                # ]),
+                ui.zone('r1c1', size='25%'),
+                ui.zone('r1c2', size='25%'),
+                ui.zone('r1c3', size='25%'),
+                ui.zone('r1c4', size='25%'),
             ]),
             ui.zone('second', direction=ui.ZoneDirection.ROW, zones=[
-                
-                ui.zone('col1', size='20%'),
-                    # Use other half for content
-                ui.zone('col2', size='60%'),
-
-                ui.zone('col3'),
-                
+                ui.zone('r2c1', size='50%'),
+                ui.zone('r2c2', size='25%'),
+                ui.zone('r2c3'),
             ]),
+            ui.zone('third', direction=ui.ZoneDirection.ROW, zones=[
+                ui.zone('r3c1', size='30%'),
+                ui.zone('r3c2', size='30%'),
+                ui.zone('r3c3'),
+            ]),
+            ui.zone('fourth', direction=ui.ZoneDirection.ROW, zones=[
+                ui.zone('r4c1', size='50%'),
+                ui.zone('r4c2'),
+            ]),
+            
             ui.zone('footer'),
         ]
     )
@@ -86,45 +81,35 @@ page['header'] = ui.header_card(
     ],
 )
 
-page['c1'] = ui.markdown_card(
-    box='sidebar',
-    title='COLUMN1',
-    content='',
-)
-page['c2'] = ui.markdown_card(
-    box='content',
-    title='COLUMN2',
-    content='',
-)
-page['c3'] = ui.markdown_card(
-    box='rest1',
-    title='COLUMN3',
-    content='',
-)
-page['c4'] = ui.markdown_card(
-    box='rest2',
-    title='COLUMN4',
-    content='',
-)
-page['c5'] = ui.markdown_card(
-    box='row1',
-    title='Second Row',
-    content='',
-)
-page['c6'] = ui.markdown_card(
-    box='col1',
-    title='Second Row Col1',
-    content='ddfsg',
-)
-page['c7'] = ui.markdown_card(
-    box='col2',
-    title='Second Row Col2',
-    content='hrthr',
-)
-page['c8'] = ui.markdown_card(
-    box='col3',
-    title='Second Row Col2',
-    content='hrthr',
-)
+flag = 'n'
+row = 4
+for i in range(1,row+1):
+    if i == "2":
+        ran = 4
+    elif i == "4":
+        ran = 3
+    else:
+        ran = 5
+
+    for j in range(1,ran):
+        if i == 2 and j == 3:
+            flag = 'y'
+        page[f'row_{i}_{j}'] = ui.markdown_card(
+            box=f'r{i}c{j}',
+            title=f'ROW {i} - COLUMN {j}',
+            content='Sample contents to test all layouts',
+        )
+    if flag == 'y':
+        page[f'row_2-1_3'] = ui.markdown_card(
+            box=f'r2c3',
+            title=f'ROW 2-1 - COLUMN 3',
+            content='Sample contents to test all layouts',
+        )
+
+page['footer'] = ui.markdown_card(
+    box='footer',
+    title=f'FOOTER',
+    content='Sample contents to test all layouts',
+)         
 
 page.save()
