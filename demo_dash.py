@@ -1,6 +1,14 @@
-from h2o_wave import main, app, Q, ui, site
+import time
+from faker import Faker
+from synth import FakeCategoricalSeries
+from h2o_wave import main, app, Q, ui, site, data
 
 page = site['/dash']
+
+fake = Faker()
+f = FakeCategoricalSeries()
+cat, val, pc = f.next()
+c = []
 
 page['meta'] = ui.meta_card(box='', layouts=[
     ui.layout(
@@ -31,7 +39,7 @@ page['meta'] = ui.meta_card(box='', layouts=[
     ),
     ui.layout(
         # If the viewport width >= 1200:
-        breakpoint='xl',
+        breakpoint='l',
         # width='1500px',
         zones=[
             # 80px high header
@@ -95,38 +103,20 @@ page['header'] = ui.header_card(
     ],
 )
 
-# for i in range(5):
-#     page[f'bar_stat_{i}'] = ui.wide_bar_stat_card(
-#         box=ui.boxes('content', 'sidebar', f'content{i}'),
-#         title="Jingle bells",
-#         value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-#         aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-#         plot_color='$red',
-#         progress=0.3,
-#         data=dict(foo=10, bar=0.5),
-#     )
-
 for i in range(1,5):
-    page[f'stat_{i}'] = ui.wide_bar_stat_card(
+    c.append(page.add(f'stat_{i}', ui.wide_series_stat_card(
         box=ui.boxes('content', 'sidebar', f'r1c{i}'),
-        title="Jingle bells",
-        value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-        aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        title=fake.cryptocurrency_name(),
+        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
+        data=dict(qux=val, quux=pc / 100),
+        plot_category='foo',
+        plot_type='interval',
+        plot_value='qux',
         plot_color='$red',
-        progress=0.3,
-        data=dict(foo=10, bar=0.5),
-    )
-
-for i in range(1,5):
-    page[f'stat_{i}'] = ui.wide_bar_stat_card(
-        box=ui.boxes('content', 'sidebar', f'r1c{i}'),
-        title="Jingle bells",
-        value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-        aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-        plot_color='$red',
-        progress=0.3,
-        data=dict(foo=10, bar=0.5),
-    )
+        plot_data=data('foo qux', -15),
+        plot_zero_value=0,
+    )))
 
 for i in range(1,4):
     page[f'text_{i}'] = ui.markdown_card(
@@ -136,3 +126,12 @@ for i in range(1,4):
     )
 
 page.save()
+
+while True:
+    time.sleep(1)
+    for card in c:
+        cat, val, pc = f.next()
+        card.data.qux = val
+        card.data.quux = pc / 100
+        card.plot_data[-1] = [cat, val]
+    page.save()
