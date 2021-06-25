@@ -1,14 +1,11 @@
+from random import random
 import time
 from faker import Faker
-from synth import FakeCategoricalSeries
+from synth import FakeCategoricalSeries, FakeTimeSeries, FakeMultiTimeSeries, FakePercent, FakeMultiCategoricalSeries
 from h2o_wave import main, app, Q, ui, site, data
+from random import randint
 
 page = site['/dash']
-
-fake = Faker()
-f = FakeCategoricalSeries()
-cat, val, pc = f.next()
-c = []
 
 page['meta'] = ui.meta_card(box='', layouts=[
     ui.layout(
@@ -50,36 +47,27 @@ page['meta'] = ui.meta_card(box='', layouts=[
                 ui.zone('r1c2', size='25%'),
                 ui.zone('r1c3', size='25%'),
                 ui.zone('r1c4', size='25%'),
-                
-                # ui.zone('other', zones=[
-                #     # Use one half for charts
-                #     ui.zone('charts', direction=ui.ZoneDirection.ROW),
-                #     # Use other half for content
-                #     ui.zone('content'),
-                # ]),
             ]),
             ui.zone('second', direction=ui.ZoneDirection.ROW, zones=[
-                ui.zone('r2c1', size='20%'),
-                ui.zone('r2c2', size='60%'),
-                ui.zone('r2c3'),
+                ui.zone('r2c1', size='50%'),
+                ui.zone('r2c2', size='25%'),
+                ui.zone('r2c3', size='25%'),
             ]),
-            # # Use remaining space for body
-            # ui.zone('body', direction=ui.ZoneDirection.ROW, zones=[
-            #     # 300px wide sidebar
-            #     # ui.zone('sidebar', size='300px'),
-            #     # Use remaining space for other widgets
-            #     ui.zone('content0', size='300px'),
-            #     ui.zone('content1', size='300px'),
-            #     ui.zone('content2', size='300px'),
-            #     ui.zone('content3', size='300px'),
-            #     ui.zone('content4', size='300px'),
-            #     # ui.zone('other', zones=[
-            #     #     # Use one half for charts
-            #     #     ui.zone('charts', direction=ui.ZoneDirection.ROW),
-            #     #     # Use other half for content
-            #     #     ui.zone('content', size='250px'),
-            #     # ]),
-            # ]),
+            ui.zone('third', direction=ui.ZoneDirection.ROW, zones=[
+                ui.zone('r3c1', size='40%'),
+                ui.zone('r3c2', size='40%'),
+                ui.zone('r3c3'),
+            ]),
+            ui.zone('fourth', direction=ui.ZoneDirection.ROW, zones=[
+                ui.zone('r4c1', size='50%'),
+                ui.zone('r4c2'),
+            ]),
+            ui.zone('fifth', direction=ui.ZoneDirection.ROW, zones=[
+                ui.zone('r5c1', size='35%'),
+                ui.zone('r5c2', size='35%'),
+                ui.zone('r5c3'),
+            ]),
+
             ui.zone('footer'),
         ]
     )
@@ -92,46 +80,145 @@ page['header'] = ui.header_card(
     subtitle='Sample dashboard for testing',
     nav=[
         ui.nav_group('Menu', items=[
-            ui.nav_item(name='#menu/spam', label='Spam'),
-            ui.nav_item(name='#menu/ham', label='Ham'),
-            ui.nav_item(name='#menu/eggs', label='Eggs'),
+            ui.nav_item(name='#', label='Categories', icon='list'),
+            ui.nav_item(name='#', label='Entries', icon='entry'),
+            ui.nav_item(name='#', label='Assets', icon='gallery'),
+        ]),
+        ui.nav_group('User', items=[
+            ui.nav_item(name='#', label='Profile', icon='user'),
+            ui.nav_item(name='#', label='Settings', icon='settings'),
         ]),
         ui.nav_group('Help', items=[
-            ui.nav_item(name='#about', label='About'),
-            ui.nav_item(name='#support', label='Support'),
+            ui.nav_item(name='#', label='About', icon='info'),
+            ui.nav_item(name='#', label='Support', icon='tools'),
         ])
     ],
 )
 
+colors = '$red $pink $blue $azure $cyan $teal $mint $green $lime $yellow $amber $orange $tangerine'.split()
+fake = Faker()
+fc = FakeCategoricalSeries()
+cat_g, val_g, pc_g = fc.next()
+d = []
 for i in range(1,5):
-    c.append(page.add(f'stat_{i}', ui.wide_series_stat_card(
+    d.append(page.add(f'stat_{i}', ui.wide_series_stat_card(
         box=ui.boxes('content', 'sidebar', f'r1c{i}'),
         title=fake.cryptocurrency_name(),
         value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
-        data=dict(qux=val, quux=pc / 100),
+        data=dict(qux=val_g, quux=pc_g / 100),
         plot_category='foo',
         plot_type='interval',
         plot_value='qux',
-        plot_color='$red',
+        plot_color=colors[randint(0,12)],
         plot_data=data('foo qux', -15),
         plot_zero_value=0,
     )))
 
+
+n = 50
+fm = FakeMultiTimeSeries()
+g = page.add('graph', ui.plot_card(
+    box='r2c1',
+    title='Area, groups, smooth',
+    data=data('product date price', n * 5),
+    plot=ui.plot([ui.mark(type='area', x_scale='time', x='=date', y='=price', color='=product', y_min=0)])
+))
+
+
+fp = FakePercent()
+
+c = []
+for i in range(1,3):
+    val_c, pc_c = fp.next()
+    c.append(page.add(f'gauge_{i}', ui.tall_gauge_stat_card(
+        box=f'r2c{i+1}',
+        title=fake.cryptocurrency_name(),
+        value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        plot_color=colors[i*4],
+        progress=pc_c,
+        data=dict(foo=val_c, bar=pc_c),
+    )))
+
+
+ls=[]
 for i in range(1,4):
-    page[f'text_{i}'] = ui.markdown_card(
-        box=ui.boxes('content', 'sidebar', f'r2c{i}'),
-        title='Hello World',
-        content='"The Internet? Is that thing still around?" - *Homer Simpson*',
-    )
+    val_ls, pc_ls = fp.next()
+    ls.append(page.add(f'l_stat_{i}', ui.large_stat_card(
+        box=f'r3c{i}',
+        title=fake.cryptocurrency_name(),
+        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
+        data=dict(qux=val_ls, quux=pc_ls),
+        caption=' '.join(fake.sentences()),
+    )))
+
+
+np = 10
+k = 5
+fmc = FakeMultiCategoricalSeries(groups=k)
+p = page.add('plot', ui.plot_card(
+    box='r4c2',
+    title='Intervals, stacked',
+    data=data('country product price', np * k),
+    plot=ui.plot([ui.mark(type='interval', x='=price', y='=product', color='=country', stack='auto', y_min=0)])
+))
+
+
+curves = 'smooth step linear'.split()
+cards = []
+sw = []
+for i in range(1,4):
+    cat_sw, val_sw, pc_sw = fc.next()
+    w = page.add(f'stat_wide_{i}', ui.wide_series_stat_card(
+        box=f'r5c{i}',
+        title=fake.cryptocurrency_name(),
+        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
+        data=dict(qux=val_sw, quux=pc_sw / 100),
+        plot_category='foo',
+        plot_type='area',
+        plot_value='qux',
+        plot_color=colors[i],
+        plot_data=data('foo qux', -15),
+        plot_zero_value=0,
+        plot_curve=curves[i-1],
+    ))
+    cards.append((fc, w))
 
 page.save()
 
+
+
 while True:
     time.sleep(1)
-    for card in c:
-        cat, val, pc = f.next()
-        card.data.qux = val
-        card.data.quux = pc / 100
-        card.plot_data[-1] = [cat, val]
+
+    for card in d:
+        cat_g, val_g, pc_g = fc.next()
+        card.data.qux = val_g
+        card.data.quux = pc_g / 100
+        card.plot_data[-1] = [cat_g, val_g]
+
+    g.data = [(g, t, x) for x in [fm.next() for _ in range(n)] for g, t, x, dx in x]
+    
+    p.data = [(g, t, x) for x in [fmc.next() for _ in range(np)] for g, t, x, dx in x]
+
+    for i in range(1,3):
+        val_c, pc_c = fp.next()
+        c[i-1].data.foo = val_c
+        c[i-1].data.bar = pc_c
+        c[i-1].progress = pc_c
+
+    for i in range(1,4):
+        val_ls, pc_ls = fp.next()
+        ls[i-1].data.qux = val_ls
+        ls[i-1].data.quux = pc_ls
+
+    for f, b in cards:
+        cat_sw, val_sw, pc_sw = f.next()
+        b.data.qux = val_sw
+        b.data.quux = pc_sw / 100
+        b.plot_data[-1] = [cat_sw, val_sw]
+
     page.save()
