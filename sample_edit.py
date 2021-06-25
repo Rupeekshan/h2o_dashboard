@@ -1,4 +1,5 @@
-from h2o_wave import main, app, Q, ui, site
+from synth import FakeTimeSeries
+from h2o_wave import main, app, Q, ui, site, data
 
 page = site['/samp']
 
@@ -57,7 +58,7 @@ page['meta'] = ui.meta_card(box='', layouts=[
                 ui.zone('r4c1', size='50%'),
                 ui.zone('r4c2'),
             ]),
-            
+
             ui.zone('footer'),
         ]
     )
@@ -70,13 +71,17 @@ page['header'] = ui.header_card(
     subtitle='Sample dashboard for testing',
     nav=[
         ui.nav_group('Menu', items=[
-            ui.nav_item(name='#menu/spam', label='Spam'),
-            ui.nav_item(name='#menu/ham', label='Ham'),
-            ui.nav_item(name='#menu/eggs', label='Eggs'),
+            ui.nav_item(name='#', label='Categories', icon='list'),
+            ui.nav_item(name='#', label='Entries', icon='entry'),
+            ui.nav_item(name='#', label='Assets', icon='gallery'),
+        ]),
+        ui.nav_group('User', items=[
+            ui.nav_item(name='#', label='Profile', icon='user'),
+            ui.nav_item(name='#', label='Settings', icon='settings'),
         ]),
         ui.nav_group('Help', items=[
-            ui.nav_item(name='#about', label='About'),
-            ui.nav_item(name='#support', label='Support'),
+            ui.nav_item(name='#', label='About', icon='info'),
+            ui.nav_item(name='#', label='Support', icon='tools'),
         ])
     ],
 )
@@ -92,24 +97,18 @@ for i in range(1,row+1):
         ran = 5
 
     for j in range(1,ran):
-        if i == 2 and j == 3:
-            flag = 'y'
+        
         page[f'row_{i}_{j}'] = ui.markdown_card(
             box=f'r{i}c{j}',
             title=f'ROW {i} - COLUMN {j}',
             content='Sample contents to test all layouts',
         )
-    if flag == 'y':
-        page[f'row_2-1_3'] = ui.markdown_card(
-            box=f'r2c3',
-            title=f'ROW 2-1 - COLUMN 3',
-            content='Sample contents to test all layouts',
-        )
+    
 
 page['footer'] = ui.markdown_card(
     box='footer',
-    title=f'FOOTER',
+    title='FOOTER',
     content='Sample contents to test all layouts',
-)         
+)   
 
 page.save()
