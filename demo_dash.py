@@ -102,12 +102,12 @@ fc = FakeCategoricalSeries()
 cat_g, val_g, pc_g = fc.next()
 d = []
 # <<<<<<<<--------------------------------------------------------------------->>>>>>>>>>
-Details = ['', 'Total Employees', 'Absent Percentage',
+details = ['', 'Total Employees', 'Absent Percentage',
            'Forecast Efficiency', 'Current Efficiency']
 for i in range(1, 5):
     d.append(page.add(f'stat_{i}', ui.wide_series_stat_card(  # Employees Total
         box=ui.boxes('content', 'sidebar', f'r1c{i}'),
-        title=Details[i],  # fake.cryptocurrency_name(),
+        title=details[i],  # fake.cryptocurrency_name(),
         value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_g, quux=pc_g / 100),
@@ -134,12 +134,12 @@ g = page.add('graph', ui.plot_card(
 fp = FakePercent()
 
 c = []
-Details_Pcs = ['', 'Total PCs', 'Total PCs for the week']
+details_pcs = ['', 'Total PCs', 'Total PCs for the week']
 for i in range(1, 3):
     val_c, pc_c = fp.next()
     c.append(page.add(f'gauge_{i}', ui.tall_gauge_stat_card(
         box=f'r2c{i+1}',
-        title=Details_Pcs[i],  # Details_Pcs[i],  # fake.cryptocurrency_name(),
+        title=details_pcs[i],  # Details_Pcs[i],  # fake.cryptocurrency_name(),
         value='={{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         plot_color=colors[i*4],
@@ -149,12 +149,12 @@ for i in range(1, 3):
 
 
 ls = []
-Details_Damage = ['', 'Damage Percentage', 'Pending Boxes', 'Delivered Boxes']
+details_damage = ['', 'Damage Percentage', 'Pending Boxes', 'Delivered Boxes']
 for i in range(1, 4):
     val_ls, pc_ls = fp.next()
     ls.append(page.add(f'l_stat_{i}', ui.large_stat_card(
         box=f'r3c{i}',
-        title=Details_Damage[i],  # fake.cryptocurrency_name(),
+        title=details_damage[i],  # fake.cryptocurrency_name(),
         value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_ls, quux=pc_ls),
@@ -175,13 +175,13 @@ p = page.add('plot', ui.plot_card(
 curves = 'smooth step linear'.split()
 cards = []
 sw = []
-Details_Machine = ['', 'Available Sewing Machine',
+details_machine = ['', 'Available Sewing Machine',
                    'Available Cutting Quantity', 'Total Style Changes next week']
 for i in range(1, 4):
     cat_sw, val_sw, pc_sw = fc.next()
     w = page.add(f'stat_wide_{i}', ui.wide_series_stat_card(
         box=f'r5c{i}',
-        title=Details_Machine[i],  # fake.cryptocurrency_name(),
+        title=details_machine[i],  # fake.cryptocurrency_name(),
         value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_sw, quux=pc_sw / 100),
