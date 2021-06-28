@@ -14,7 +14,7 @@ class FakeSeries:
         x0 = self.x
         x = x0 + (random.random() - 0.5) * self.variation
         if not self.min <= x <= self.max:
-            x = self.start
+            x = self.start 
         self.x = x
         dx = 0 if x0 == 0 else 100.0 * (x - x0) / x0
         return x, dx

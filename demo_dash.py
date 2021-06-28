@@ -5,6 +5,7 @@ from synth import FakeCategoricalSeries, FakeTimeSeries, FakeMultiTimeSeries, Fa
 from h2o_wave import main, app, Q, ui, site, data
 from random import randint
 
+
 page = site['/dash']
 
 page['meta'] = ui.meta_card(box='', layouts=[
@@ -76,13 +77,13 @@ page['meta'] = ui.meta_card(box='', layouts=[
 page['header'] = ui.header_card(
     # Place card in the header zone, regardless of viewport size.
     box='header',
-    title='Dashboard',
-    subtitle='Sample dashboard for testing',
+    title='XYZ Apperals',
+    subtitle='Production View ',
     nav=[
         ui.nav_group('Menu', items=[
-            ui.nav_item(name='#', label='Categories', icon='list'),
-            ui.nav_item(name='#', label='Entries', icon='entry'),
-            ui.nav_item(name='#', label='Assets', icon='gallery'),
+            ui.nav_item(name='#', label='Employees Details', icon='list'),
+            ui.nav_item(name='#', label='Production Details', icon='entry'),
+            ui.nav_item(name='#', label='Products', icon='gallery'),
         ]),
         ui.nav_group('User', items=[
             ui.nav_item(name='#', label='Profile', icon='user'),
@@ -100,41 +101,46 @@ fake = Faker()
 fc = FakeCategoricalSeries()
 cat_g, val_g, pc_g = fc.next()
 d = []
-for i in range(1,5):
-    d.append(page.add(f'stat_{i}', ui.wide_series_stat_card(
+# <<<<<<<<--------------------------------------------------------------------->>>>>>>>>>
+Details = ['', 'Total Employees', 'Absent Percentage',
+           'Forecast Efficiency', 'Current Efficiency']
+for i in range(1, 5):
+    d.append(page.add(f'stat_{i}', ui.wide_series_stat_card(  # Employees Total
         box=ui.boxes('content', 'sidebar', f'r1c{i}'),
-        title=fake.cryptocurrency_name(),
-        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        title=Details[i],  # fake.cryptocurrency_name(),
+        value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_g, quux=pc_g / 100),
         plot_category='foo',
         plot_type='interval',
         plot_value='qux',
-        plot_color=colors[randint(0,12)],
+        plot_color=colors[randint(0, 12)],
         plot_data=data('foo qux', -15),
         plot_zero_value=0,
     )))
 
-
-n = 50
+# <<<<<<<-------------------------------------------------------------------------------->>>>>>>
+n = 100  # Pcs with time
 fm = FakeMultiTimeSeries()
 g = page.add('graph', ui.plot_card(
     box='r2c1',
-    title='Area, groups, smooth',
+    title='PCs with time',
     data=data('product date price', n * 5),
-    plot=ui.plot([ui.mark(type='area', x_scale='time', x='=date', y='=price', color='=product', y_min=0)])
+    plot=ui.plot([ui.mark(type='area', x_scale='time', x='=date',
+                          y='=price', color='=product', y_min=0)])
 ))
 
 
 fp = FakePercent()
 
 c = []
-for i in range(1,3):
+Details_Pcs = ['', 'Total PCs', 'Total PCs for the week']
+for i in range(1, 3):
     val_c, pc_c = fp.next()
     c.append(page.add(f'gauge_{i}', ui.tall_gauge_stat_card(
         box=f'r2c{i+1}',
-        title=fake.cryptocurrency_name(),
-        value='=${{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        title=Details_Pcs[i],  # Details_Pcs[i],  # fake.cryptocurrency_name(),
+        value='={{intl foo minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl bar style="percent" minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         plot_color=colors[i*4],
         progress=pc_c,
@@ -142,39 +148,41 @@ for i in range(1,3):
     )))
 
 
-ls=[]
-for i in range(1,4):
+ls = []
+Details_Damage = ['', 'Damage Percentage', 'Pending Boxes', 'Delivered Boxes']
+for i in range(1, 4):
     val_ls, pc_ls = fp.next()
     ls.append(page.add(f'l_stat_{i}', ui.large_stat_card(
         box=f'r3c{i}',
-        title=fake.cryptocurrency_name(),
-        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        title=Details_Damage[i],  # fake.cryptocurrency_name(),
+        value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_ls, quux=pc_ls),
         caption=' '.join(fake.sentences()),
     )))
-
 
 np = 10
 k = 5
 fmc = FakeMultiCategoricalSeries(groups=k)
 p = page.add('plot', ui.plot_card(
     box='r4c2',
-    title='Intervals, stacked',
+    title='Last Month Success Rate',
     data=data('country product price', np * k),
-    plot=ui.plot([ui.mark(type='interval', x='=price', y='=product', color='=country', stack='auto', y_min=0)])
+    plot=ui.plot([ui.mark(type='interval', x='=price',
+                          y='=product', color='=country', stack='auto', y_min=0)])
 ))
-
 
 curves = 'smooth step linear'.split()
 cards = []
 sw = []
-for i in range(1,4):
+Details_Machine = ['', 'Available Sewing Machine',
+                   'Available Cutting Quantity', 'Total Style Changes next week']
+for i in range(1, 4):
     cat_sw, val_sw, pc_sw = fc.next()
     w = page.add(f'stat_wide_{i}', ui.wide_series_stat_card(
         box=f'r5c{i}',
-        title=fake.cryptocurrency_name(),
-        value='=${{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        title=Details_Machine[i],  # fake.cryptocurrency_name(),
+        value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_sw, quux=pc_sw / 100),
         plot_category='foo',
@@ -190,7 +198,6 @@ for i in range(1,4):
 page.save()
 
 
-
 while True:
     time.sleep(1)
 
@@ -200,17 +207,19 @@ while True:
         card.data.quux = pc_g / 100
         card.plot_data[-1] = [cat_g, val_g]
 
-    g.data = [(g, t, x) for x in [fm.next() for _ in range(n)] for g, t, x, dx in x]
-    
-    p.data = [(g, t, x) for x in [fmc.next() for _ in range(np)] for g, t, x, dx in x]
+    g.data = [(g, t, x) for x in [fm.next() for _ in range(n)]
+              for g, t, x, dx in x]
 
-    for i in range(1,3):
+    p.data = [(g, t, x) for x in [fmc.next() for _ in range(np)]
+              for g, t, x, dx in x]
+
+    for i in range(1, 3):
         val_c, pc_c = fp.next()
         c[i-1].data.foo = val_c
         c[i-1].data.bar = pc_c
         c[i-1].progress = pc_c
 
-    for i in range(1,4):
+    for i in range(1, 4):
         val_ls, pc_ls = fp.next()
         ls[i-1].data.qux = val_ls
         ls[i-1].data.quux = pc_ls
