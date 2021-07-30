@@ -101,14 +101,17 @@ fake = Faker()
 fc = FakeCategoricalSeries()
 cat_g, val_g, pc_g = fc.next()
 d = []
-# <<<<<<<<--------------------------------------------------------------------->>>>>>>>>>
+
+# <<<<<<<<--------------------FIRST ROW------------------------>>>>>>>>>>
 details = ['', 'Total Employees', 'Absent Percentage',
            'Forecast Efficiency', 'Current Efficiency']
 for i in range(1, 5):
+    # if i == 3 or i == 4:
+        # temp = {intl qux minimum_fraction_digits=0 maximum_fraction_digits=0}
     d.append(page.add(f'stat_{i}', ui.wide_series_stat_card(  # Employees Total
         box=ui.boxes('content', 'sidebar', f'r1c{i}'),
         title=details[i],  # fake.cryptocurrency_name(),
-        value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+        value='={{intl qux minimum_fraction_digits=2 maximum_fraction_digits=2}}', # if i != 1 else '={{intl qux minimum_fraction_digits=0 maximum_fraction_digits=0}}'
         aux_value='={{intl quux style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
         data=dict(qux=val_g, quux=pc_g / 100),
         plot_category='foo',
@@ -119,7 +122,8 @@ for i in range(1, 5):
         plot_zero_value=0,
     )))
 
-# <<<<<<<-------------------------------------------------------------------------------->>>>>>>
+
+# <<<<<<<<--------------------SECOND ROW------------------------>>>>>>>>>>
 n = 100  # Pcs with time
 fm = FakeMultiTimeSeries()
 g = page.add('graph', ui.plot_card(
@@ -129,7 +133,6 @@ g = page.add('graph', ui.plot_card(
     plot=ui.plot([ui.mark(type='area', x_scale='time', x='=date',
                           y='=price', color='=product', y_min=0)])
 ))
-
 
 fp = FakePercent()
 
@@ -148,6 +151,7 @@ for i in range(1, 3):
     )))
 
 
+# <<<<<<<<--------------------THIRD ROW------------------------>>>>>>>>>>
 ls = []
 details_damage = ['', 'Damage Percentage', 'Pending Boxes', 'Delivered Boxes']
 for i in range(1, 4):
@@ -161,6 +165,42 @@ for i in range(1, 4):
         caption=' '.join(fake.sentences()),
     )))
 
+
+# <<<<<<<<--------------------FOURTH ROW------------------------>>>>>>>>>>
+table_fields = ['Date', 'Fabric Id', 'Total Count', 'CHN', 'BAN', 'IND', 'AFG']
+table_rows = [
+    ['2021-06-28', 'abc001', '118', '132', '129', '121', '121'],
+    ['2021-06-27', 'abc001', '126', '141', '135', '125', '121'],
+    ['2021-06-26', 'abc001', '150', '178', '163', '172', '121'],
+    ['2021-06-25', 'abc001', '180', '193', '181', '183', '121'],
+    ['2021-06-24', 'abc001', '196', '236', '235', '229', '121'],
+    ['2021-06-23', 'abc001', '188', '235', '227', '234', '121'],
+]
+
+
+def make_markdown_row(values):
+    return f"| {' | '.join([str(x) for x in values])} |"
+
+
+def make_markdown_table(fields, rows):
+    return '\n'.join([
+        make_markdown_row(fields),
+        make_markdown_row('---' * len(fields)),
+        '\n'.join([make_markdown_row(row) for row in rows]),
+    ])
+
+
+page.add('table', ui.form_card(
+    box='r4c1',
+    items=[
+        ui.text(make_markdown_table(
+            fields=table_fields,
+            rows=table_rows,
+        )),
+    ],
+))
+
+
 np = 10
 k = 5
 fmc = FakeMultiCategoricalSeries(groups=k)
@@ -172,6 +212,8 @@ p = page.add('plot', ui.plot_card(
                           y='=product', color='=country', stack='auto', y_min=0)])
 ))
 
+
+# <<<<<<<<--------------------FIFTH ROW------------------------>>>>>>>>>>
 curves = 'smooth step linear'.split()
 cards = []
 sw = []
@@ -197,9 +239,9 @@ for i in range(1, 4):
 
 page.save()
 
-
+# <<<<<<<<--------------------UPDATE------------------------>>>>>>>>>>
 while True:
-    time.sleep(1)
+    time.sleep(0.5)
 
     for card in d:
         cat_g, val_g, pc_g = fc.next()
