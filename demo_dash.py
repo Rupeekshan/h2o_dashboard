@@ -178,6 +178,7 @@ table_rows = [
 ]
 
 
+# Methods used for table 
 def make_markdown_row(values):
     return f"| {' | '.join([str(x) for x in values])} |"
 
@@ -204,6 +205,7 @@ page.add('table', ui.form_card(
 np = 10
 k = 5
 fmc = FakeMultiCategoricalSeries(groups=k)
+
 p = page.add('plot', ui.plot_card(
     box='r4c2',
     title='Last Month Success Rate',
